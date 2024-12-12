@@ -1,5 +1,5 @@
 import pytest
-from asphalt.core.context import Context
+from asphalt.core import Context
 
 from asphalt.serialization.api import CustomizableSerializer, Serializer
 from asphalt.serialization.component import SerializationComponent
@@ -14,13 +14,13 @@ async def test_customizable_serializer() -> None:
     async with Context() as ctx:
         await component.start(ctx)
 
-        resource = ctx.require_resource(Serializer)
+        resource = ctx.get_resource_nowait(Serializer)
         assert isinstance(resource, JSONSerializer)
 
-        resource2 = ctx.require_resource(CustomizableSerializer)
+        resource2 = ctx.get_resource_nowait(CustomizableSerializer)
         assert resource2 is resource
 
-        resource3 = ctx.require_resource(JSONSerializer)
+        resource3 = ctx.get_resource_nowait(JSONSerializer)
         assert resource3 is resource
 
 
@@ -30,12 +30,12 @@ async def test_non_customizable_serializer() -> None:
     async with Context() as ctx:
         await component.start(ctx)
 
-        resource = ctx.require_resource(Serializer)
+        resource = ctx.get_resource_nowait(Serializer)
         assert isinstance(resource, PickleSerializer)
 
-        assert not ctx.get_resource(CustomizableSerializer)
+        assert not ctx.get_resource_nowait(CustomizableSerializer, optional=True)
 
-        resource2 = ctx.require_resource(PickleSerializer)
+        resource2 = ctx.get_resource_nowait(PickleSerializer)
         assert resource2 is resource
 
 
@@ -45,11 +45,11 @@ async def test_resource_name() -> None:
     async with Context() as ctx:
         await component.start(ctx)
 
-        resource = ctx.require_resource(Serializer, "alternate")
+        resource = ctx.get_resource_nowait(Serializer, "alternate")
         assert isinstance(resource, MsgpackSerializer)
 
-        resource2 = ctx.require_resource(CustomizableSerializer, "alternate")
+        resource2 = ctx.get_resource_nowait(CustomizableSerializer, "alternate")
         assert resource2 is resource
 
-        resource3 = ctx.require_resource(MsgpackSerializer, "alternate")
+        resource3 = ctx.get_resource_nowait(MsgpackSerializer, "alternate")
         assert resource3 is resource
