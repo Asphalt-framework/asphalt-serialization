@@ -1,6 +1,5 @@
 """An example that demonstrates how to serialize custom types."""
 
-# isort: off
 from __future__ import annotations
 
 from dataclasses import dataclass
