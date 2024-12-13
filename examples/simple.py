@@ -1,5 +1,6 @@
 """A simple example that serializes a dictionary and prints out the result."""
 
+# isort: off
 from __future__ import annotations
 
 from asphalt.core import CLIApplicationComponent, get_resource_nowait, run_application
