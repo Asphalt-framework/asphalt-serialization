@@ -4,7 +4,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from asphalt.core import CLIApplicationComponent, run_application, get_resource_nowait
+from asphalt.core import CLIApplicationComponent, get_resource_nowait, run_application
+
 from asphalt.serialization import CustomizableSerializer
 
 
