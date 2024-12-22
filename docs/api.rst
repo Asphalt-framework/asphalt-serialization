@@ -15,6 +15,12 @@ Serializer API
 .. autoclass:: CustomizableSerializer
 .. autoclass:: CustomTypeCodec
 
+Exceptions
+----------
+
+.. autoexception:: SerializationError
+.. autoexception:: DeserializationError
+
 Marshalling callbacks
 ---------------------
 

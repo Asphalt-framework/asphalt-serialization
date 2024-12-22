@@ -2,8 +2,10 @@ from __future__ import annotations
 
 import re
 import sys
+from binascii import unhexlify
 from datetime import datetime, timezone
 from functools import partial
+from socket import socket
 from types import SimpleNamespace
 from typing import Any, cast
 
@@ -12,7 +14,11 @@ from _pytest.fixtures import SubRequest
 from cbor2 import CBORTag
 from msgpack import ExtType
 
-from asphalt.serialization import CustomizableSerializer
+from asphalt.serialization import (
+    CustomizableSerializer,
+    DeserializationError,
+    SerializationError,
+)
 from asphalt.serialization.serializers.cbor import CBORSerializer, CBORTypeCodec
 from asphalt.serialization.serializers.json import JSONSerializer
 from asphalt.serialization.serializers.msgpack import (
@@ -113,6 +119,16 @@ def test_basic_types_roundtrip(serializer: CustomizableSerializer, input: Any) -
 
     deserialized = serializer.deserialize(output)
     assert deserialized == input
+
+
+def test_serialization_error(serializer: CustomizableSerializer) -> None:
+    with pytest.raises(SerializationError), socket() as sock:
+        serializer.serialize(sock)
+
+
+def test_deserialization_error(serializer: CustomizableSerializer) -> None:
+    with pytest.raises(DeserializationError):
+        serializer.deserialize(unhexlify("c11b9b9b9b0000000000"))
 
 
 @pytest.mark.parametrize("serializer_type", ["cbor", "pickle", "yaml"])

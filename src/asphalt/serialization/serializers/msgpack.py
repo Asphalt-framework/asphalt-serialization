@@ -5,6 +5,7 @@ from typing import Any
 from asphalt.core import resolve_reference
 from msgpack import ExtType, packb, unpackb
 
+from .. import DeserializationError, SerializationError
 from .._api import CustomizableSerializer
 from .._object_codec import DefaultCustomTypeCodec
 
@@ -103,10 +104,16 @@ class MsgpackSerializer(CustomizableSerializer):
         self.unpacker_options.setdefault("raw", False)
 
     def serialize(self, obj: Any) -> bytes:
-        return packb(obj, **self.packer_options)  # type: ignore[no-any-return]
+        try:
+            return packb(obj, **self.packer_options)  # type: ignore[no-any-return]
+        except Exception as exc:
+            raise SerializationError(str(exc)) from exc
 
     def deserialize(self, payload: bytes) -> Any:
-        return unpackb(payload, **self.unpacker_options)
+        try:
+            return unpackb(payload, **self.unpacker_options)
+        except Exception as exc:
+            raise DeserializationError(str(exc)) from exc
 
     @property
     def mimetype(self) -> str:

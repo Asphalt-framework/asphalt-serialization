@@ -5,6 +5,7 @@ from typing import Any
 
 from ruamel.yaml import YAML
 
+from .. import DeserializationError, SerializationError
 from .._api import Serializer
 
 
@@ -35,12 +36,18 @@ class YAMLSerializer(Serializer):
         self._yaml = YAML(typ="safe" if safe else "unsafe")
 
     def serialize(self, obj: Any) -> bytes:
-        buffer = StringIO()
-        self._yaml.dump(obj, buffer)
-        return buffer.getvalue().encode("utf-8")
+        try:
+            buffer = StringIO()
+            self._yaml.dump(obj, buffer)
+            return buffer.getvalue().encode("utf-8")
+        except Exception as exc:
+            raise SerializationError(str(exc)) from exc
 
     def deserialize(self, payload: bytes) -> Any:
-        return self._yaml.load(payload)
+        try:
+            return self._yaml.load(payload)
+        except Exception as exc:
+            raise DeserializationError(str(exc)) from exc
 
     @property
     def mimetype(self) -> str:

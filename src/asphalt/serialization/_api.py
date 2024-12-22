@@ -38,15 +38,23 @@ class Serializer(metaclass=ABCMeta):
     serialization support for custom types.
     """
 
-    __slots__ = ()
+    __slots__ = ("__weakref__",)
 
     @abstractmethod
     def serialize(self, obj: Any) -> bytes:
-        """Serialize a Python object into bytes."""
+        """
+        Serialize a Python object into bytes.
+
+        :raises SerializationError: if serialization fails
+        """
 
     @abstractmethod
     def deserialize(self, payload: bytes) -> Any:
-        """Deserialize bytes into a Python object."""
+        """
+        Deserialize bytes into a Python object.
+
+        :raises DesrializationError: if deserialization fails
+        """
 
     @property
     @abstractmethod

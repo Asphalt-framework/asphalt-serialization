@@ -4,6 +4,7 @@ import pickle
 from typing import Any
 
 from .._api import Serializer
+from .._exceptions import DeserializationError, SerializationError
 
 
 class PickleSerializer(Serializer):
@@ -26,10 +27,16 @@ class PickleSerializer(Serializer):
         self.protocol: int = protocol
 
     def serialize(self, obj: Any) -> bytes:
-        return pickle.dumps(obj, protocol=self.protocol)
+        try:
+            return pickle.dumps(obj, protocol=self.protocol)
+        except Exception as exc:
+            raise SerializationError(str(exc)) from exc
 
     def deserialize(self, payload: bytes) -> Any:
-        return pickle.loads(payload)
+        try:
+            return pickle.loads(payload)
+        except Exception as exc:
+            raise DeserializationError(str(exc)) from exc
 
     @property
     def mimetype(self) -> str:

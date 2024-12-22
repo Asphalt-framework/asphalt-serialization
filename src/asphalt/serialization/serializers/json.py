@@ -6,6 +6,7 @@ from typing import Any
 
 from asphalt.core import resolve_reference
 
+from .. import DeserializationError, SerializationError
 from .._api import CustomizableSerializer
 from .._object_codec import DefaultCustomTypeCodec
 
@@ -81,11 +82,17 @@ class JSONSerializer(CustomizableSerializer):
         self._decoder = JSONDecoder(**self.decoder_options)
 
     def serialize(self, obj: Any) -> bytes:
-        return self._encoder.encode(obj).encode(self.encoding)
+        try:
+            return self._encoder.encode(obj).encode(self.encoding)
+        except Exception as exc:
+            raise SerializationError(str(exc)) from exc
 
     def deserialize(self, payload: bytes) -> Any:
-        text_payload = payload.decode(self.encoding)
-        return self._decoder.decode(text_payload)
+        try:
+            text_payload = payload.decode(self.encoding)
+            return self._decoder.decode(text_payload)
+        except Exception as exc:
+            raise DeserializationError(str(exc)) from exc
 
     @property
     def mimetype(self) -> str:
