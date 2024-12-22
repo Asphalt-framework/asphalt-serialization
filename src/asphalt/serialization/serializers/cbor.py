@@ -5,6 +5,7 @@ from typing import Any
 import cbor2
 from asphalt.core import qualified_name, resolve_reference
 
+from .. import DeserializationError, SerializationError
 from .._api import CustomizableSerializer
 from .._object_codec import DefaultCustomTypeCodec
 
@@ -129,10 +130,16 @@ class CBORSerializer(CustomizableSerializer):
         self.decoder_options: dict[str, Any] = decoder_options or {}
 
     def serialize(self, obj: Any) -> bytes:
-        return cbor2.dumps(obj, **self.encoder_options)
+        try:
+            return cbor2.dumps(obj, **self.encoder_options)
+        except cbor2.CBOREncodeError as exc:
+            raise SerializationError(str(exc)) from exc
 
     def deserialize(self, payload: bytes) -> Any:
-        return cbor2.loads(payload, **self.decoder_options)
+        try:
+            return cbor2.loads(payload, **self.decoder_options)
+        except cbor2.CBORDecodeError as exc:
+            raise DeserializationError(str(exc)) from exc
 
     @property
     def mimetype(self) -> str:

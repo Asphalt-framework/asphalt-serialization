@@ -1,11 +1,15 @@
 Version history
 ===============
 
-This library adheres to `Semantic Versioning 2.0 <http://semver.org/>`_.
+This library adheres to `Semantic Versioning 2.0 <https://semver.org/>`_.
 
 **UNRELEASED**
 
-- Dropped support for Python 3.7
+- Dropped support for Python 3.7 and 3.8
+- **BACKWARD INCOMPATIBLE** Bumped minimum Asphalt version to 5.0
+- **BACKWARD INCOMPATIBLE** The ``Serializer.serialize()`` and
+  ``Serializer.deserialize()`` methods now raise ``SerializationError`` and
+  ``DeserializationError`` regardless of back-end when something goes wrong
 
 **6.0.0** (2022-06-04)
 
