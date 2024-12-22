@@ -53,7 +53,7 @@ class Serializer(metaclass=ABCMeta):
         """
         Deserialize bytes into a Python object.
 
-        :raises DesrializationError: if deserialization fails
+        :raises DeserializationError: if deserialization fails
         """
 
     @property
