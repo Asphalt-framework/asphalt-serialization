@@ -15,45 +15,19 @@ any necessary configuration values for it. The following backends are provided o
 
 Other backends may be provided by other components.
 
-Once you've selected a backend, see its specific documentation to find out what configuration
-values you need to provide, if any. Configuration values are expressed as constructor arguments
-for the backend class::
+Once you've selected a backend, see its specific documentation to find out what
+configuration values you need to provide, if any. Configuration values are expressed as
+constructor arguments for the backend class::
 
     components:
       serialization:
         backend: json
 
-This configuration publishes a :class:`~.api.Serializer` resource named
-``default`` using the JSON backend. The same can be done directly in Python code as
-follows:
+This configuration publishes a :class:`~Serializer` resource named ``default`` using the
+JSON backend. The same can be done directly in Python code as follows:
 
 .. code-block:: python
 
-    class ApplicationComponent(ContainerComponent):
-        async def start(ctx: Context) -> None:
+    class ApplicationComponent(Component):
+        def __init__(self) -> None:
             self.add_component('serialization', backend='json')
-            await super().start()
-
-
-Multiple serializers
---------------------
-
-If you need to configure multiple serializers, you will need to use multiple instances
-of the serialization component::
-
-    components:
-      serialization:
-        backend: cbor
-      serialization/msgpack:
-        resource_name: msgpack
-        backend: msgpack
-
-The above configuration creates two serializer resources, available under 6 different
-combinations:
-
-* :class:`~.api.Serializer` / ``default``
-* :class:`~.api.CustomizableSerializer` / ``default``
-* :class:`~.serializers.cbor.CBORSerializer` / ``default``
-* :class:`~.api.Serializer` / ``msgpack``
-* :class:`~.api.CustomizableSerializer` / ``msgpack``
-* :class:`~.serializers.msgpack.MsgpackSerializer` / ``msgpack``
