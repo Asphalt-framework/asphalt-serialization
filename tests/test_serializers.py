@@ -208,20 +208,20 @@ class TestCustomTypes:
     def test_missing_getattr(self, serializer: CustomizableSerializer) -> None:
         testval = UnserializableSimpleType(1, "a")
         serializer.register_custom_type(UnserializableSimpleType)
-        exc = pytest.raises(TypeError, serializer.serialize, testval)
+        exc = pytest.raises(SerializationError, serializer.serialize, testval)
         exc.match(
-            "'test_serializers.UnserializableSimpleType' has no __dict__ attribute and "
-            "does not implement __getstate__()"
+            r"'test_serializers.UnserializableSimpleType' has no __dict__ attribute "
+            r"and does not implement __getstate__\(\)"
         )
 
     def test_missing_setattr(self, serializer: CustomizableSerializer) -> None:
         testval = UnserializableSimpleType(1, "a")
         serializer.register_custom_type(UnserializableSimpleType, lambda instance: {})
         serialized = serializer.serialize(testval)
-        exc = pytest.raises(Exception, serializer.deserialize, serialized)
+        exc = pytest.raises(DeserializationError, serializer.deserialize, serialized)
         exc.match(
-            "'test_serializers.UnserializableSimpleType' has no __dict__ attribute and "
-            "does not implement __setstate__()"
+            r"'test_serializers.UnserializableSimpleType' has no __dict__ attribute "
+            r"and does not implement __setstate__\(\)"
         )
 
     def test_missing_marshaller(
@@ -229,7 +229,7 @@ class TestCustomTypes:
     ) -> None:
         serializer.register_custom_type(SlottedSimpleType)
         testval = SimpleType(1, "a")
-        exc = pytest.raises(Exception, serializer.serialize, testval)
+        exc = pytest.raises(SerializationError, serializer.serialize, testval)
         exc.match('no marshaller found for type "test_serializers.SimpleType"')
 
     def test_missing_unmarshaller(self, serializer: CustomizableSerializer) -> None:
@@ -237,7 +237,7 @@ class TestCustomTypes:
         serializer.register_custom_type(SimpleType, unmarshaller=None)
         testval = SimpleType(1, "a")
         serialized = serializer.serialize(testval)
-        exc = pytest.raises(Exception, serializer.deserialize, serialized)
+        exc = pytest.raises(DeserializationError, serializer.deserialize, serialized)
         exc.match('no unmarshaller found for type "test_serializers.SimpleType"')
 
     def test_nowrap(self, serializer: CustomizableSerializer) -> None:
@@ -250,14 +250,6 @@ class TestCustomTypes:
 
 def test_mime_types(serializer: CustomizableSerializer) -> None:
     assert re.match("[a-z]+/[a-z]+", serializer.mimetype)
-
-
-@pytest.mark.parametrize(
-    "safe", [pytest.param(True, id="safe"), pytest.param(False, id="unsafe")]
-)
-def test_yaml_safe_attribute(safe: bool) -> None:
-    serializer = YAMLSerializer(safe=safe)
-    assert serializer.safe is safe
 
 
 @pytest.mark.parametrize("serializer_type", ["msgpack"])

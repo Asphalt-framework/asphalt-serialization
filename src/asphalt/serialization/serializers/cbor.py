@@ -111,14 +111,6 @@ class CBORSerializer(CustomizableSerializer):
         ``None`` to return marshalled objects as-is
     """
 
-    __slots__ = (
-        "encoder_options",
-        "decoder_options",
-        "custom_type_codec",
-        "marshallers",
-        "unmarshallers",
-    )
-
     def __init__(
         self,
         encoder_options: dict[str, Any] | None = None,
@@ -132,13 +124,13 @@ class CBORSerializer(CustomizableSerializer):
     def serialize(self, obj: Any) -> bytes:
         try:
             return cbor2.dumps(obj, **self.encoder_options)
-        except cbor2.CBOREncodeError as exc:
+        except Exception as exc:
             raise SerializationError(str(exc)) from exc
 
     def deserialize(self, payload: bytes) -> Any:
         try:
             return cbor2.loads(payload, **self.decoder_options)
-        except cbor2.CBORDecodeError as exc:
+        except Exception as exc:
             raise DeserializationError(str(exc)) from exc
 
     @property

@@ -38,8 +38,6 @@ class Serializer(metaclass=ABCMeta):
     serialization support for custom types.
     """
 
-    __slots__ = ("__weakref__",)
-
     @abstractmethod
     def serialize(self, obj: Any) -> bytes:
         """
@@ -73,8 +71,6 @@ class CustomizableSerializer(Serializer):
     :ivar unmarshallers: a mapping of class -> (typename, unmarshaller callback)
     :vartype unmarshallers: Dict[str, Callable]
     """
-
-    __slots__ = ("custom_type_codec", "marshallers", "unmarshallers")
 
     def __init__(self: T_Serializer, custom_type_codec: CustomTypeCodec[T_Serializer]):
         self.custom_type_codec: CustomTypeCodec[T_Serializer] = custom_type_codec

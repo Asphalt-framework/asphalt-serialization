@@ -25,15 +25,10 @@ class YAMLSerializer(Serializer):
       of arbitrary code when deserializing.
 
     .. seealso:: `ruamel.yaml documentation <https://yaml.readthedocs.io/en/latest/>`_
-
-    :param safe: ``True`` to (de)serialize in safe mode, ``False`` to enable extended
-        tags
     """
 
-    __slots__ = "_yaml"
-
-    def __init__(self, safe: bool = True):
-        self._yaml = YAML(typ="safe" if safe else "unsafe")
+    def __init__(self) -> None:
+        self._yaml = YAML()
 
     def serialize(self, obj: Any) -> bytes:
         try:

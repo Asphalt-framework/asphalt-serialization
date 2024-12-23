@@ -10,6 +10,8 @@ This library adheres to `Semantic Versioning 2.0 <https://semver.org/>`_.
 - **BACKWARD INCOMPATIBLE** The ``Serializer.serialize()`` and
   ``Serializer.deserialize()`` methods now raise ``SerializationError`` and
   ``DeserializationError`` regardless of back-end when something goes wrong
+- **BACKWARD INCOMPATIBLE** Dropped the ``safe`` parameter to the YAML serializer; it
+  now operates in the default (round-trip) mode
 
 **6.0.0** (2022-06-04)
 
