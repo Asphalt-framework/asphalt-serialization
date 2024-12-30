@@ -26,6 +26,7 @@ language = "en"
 exclude_patterns = ["_build"]
 pygments_style = "sphinx"
 autodoc_default_options = {"members": True, "show-inheritance": True}
+autodoc_inherit_docstrings = False
 highlight_language = "python3"
 todo_include_todos = False
 

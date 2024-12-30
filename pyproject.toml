@@ -25,7 +25,7 @@ classifiers = [
 ]
 requires-python = ">=3.9"
 dependencies = [
-    "asphalt ~= 4.8"
+    "asphalt @ git+https://github.com/asphalt-framework/asphalt",
 ]
 dynamic = ["version"]
 
@@ -66,20 +66,21 @@ local_scheme = "dirty-tag"
 [tool.ruff.lint]
 extend-select = [
     "ASYNC",        # flake8-async
-    "W",            # pycodestyle warnings
     "G",            # flake8-logging-format
     "I",            # isort
     "ISC",          # flake8-implicit-str-concat
     "PGH",          # pygrep-hooks
     "RUF",          # Ruff-specific rules
     "UP",           # pyupgrade
+    "W",            # pycodestyle warnings
 ]
 
 [tool.ruff.lint.isort]
 known-first-party = ["asphalt.serialization"]
+known-third-party = ["asphalt.core"]
 
 [tool.pytest.ini_options]
-addopts = "-rsx --tb=short"
+addopts = ["-rsfE", "--tb=short"]
 testpaths = ["tests"]
 
 [tool.mypy]
@@ -103,10 +104,6 @@ skip_missing_interpreters = true
 commands = [["python", "-m", "pytest", { replace = "posargs", extend = true }]]
 package = "editable"
 extras = ["test"]
-
-[tool.tox.env.pyright]
-deps = ["pyright"]
-commands = [["pyright", "--verifytypes", "asphalt.exceptions"]]
 
 [tool.tox.env.docs]
 commands = [["sphinx-build", "-W", "-n", "docs", "build/sphinx", { replace = "posargs", extend = true }]]

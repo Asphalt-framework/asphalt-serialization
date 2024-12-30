@@ -15,7 +15,7 @@ This example assumes a configuration where a JSON serializer is present in the c
 as the default serializer resource.
 
 To see what Python types can be serialized by every serializer, consult the documentation of the
-abstract :class:`~asphalt.serialization.api.Serializer` class.
+abstract :class:`~asphalt.serialization.Serializer` class.
 
 
 Registering custom types with serializers
@@ -35,7 +35,7 @@ made to execute any arbitrary code by maliciously constructing the datastream.
 
 A better solution is to use one of the ``cbor``, ``msgpack`` or ``json`` serializers and register
 each type intended for serialization using
-:meth:`~asphalt.serialization.api.CustomizableSerializer.register_custom_type`. This method lets
+:meth:`~asphalt.serialization.CustomizableSerializer.register_custom_type`. This method lets
 the user register marshalling/unmarshalling functions that are called whenever the serializer
 encounters an instance of the registered type, or when the deserializer needs to reconstitute an
 object of that type using the state object previously returned by the marshaller callback.
@@ -118,8 +118,8 @@ The callbacks can be a natural part of the class too if you want::
     serializer.register_custom_type(User, User.marshal, User.unmarshal)
 
 .. hint:: If a component depends on the ability to register custom types, it can request a resource
- of type :class:`~asphalt.serialization.api.CustomizableSerializer` instead of
- :class:`~asphalt.serialization.api.Serializer`.
+ of type :class:`~asphalt.serialization.CustomizableSerializer` instead of
+ :class:`~asphalt.serialization.Serializer`.
 
 Disabling the default wrapping of marshalled custom types
 ---------------------------------------------------------
